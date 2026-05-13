@@ -17,23 +17,6 @@ When you play a game through SteamTools, cloud saves don't work — Steam Cloud 
 - 🔧 Built-in cleanup tools for orphaned data left by SteamTools
 - 📌 Manifest pinning to lock Steam Client versions
 
-## What's different from CloudRedirect
-
-Tools Cloud is built on top of CloudRedirect with several additional features and improvements:
-
-| Feature | CloudRedirect | Tools Cloud |
-|---|:---:|:---:|
-| Cloud sync (GDrive/OneDrive/local) | ✅ | ✅ |
-| Setup & patching | ✅ | ✅ |
-| Cleanup tools | ✅ | ✅ |
-| **Ludusavi integration** | ❌ | ✅ |
-| **Hydra save import** | ❌ | ✅ |
-| **Save variant management** | ❌ | ✅ |
-| **Achievement viewer & translator** | ❌ | ✅ |
-| **Save history & monitoring** | ❌ | ✅ |
-| **API key encryption (DPAPI)** | ❌ | ✅ |
-| **Multi-language UI (EN/PT-BR/ES)** | Partial | ✅ |
-
 ### New features in detail
 
 - **Ludusavi Scan** — Automatically detect and import save games using [Ludusavi](https://github.com/mtkennerly/ludusavi), a game save backup tool. Scans your system for known save locations and integrates them as a save source.
