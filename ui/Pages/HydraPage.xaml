@@ -1,0 +1,62 @@
+﻿<Page x:Class="ToolsCloud.Pages.HydraPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:conv="clr-namespace:ToolsCloud.Converters"
+      Title="Import from Hydra"
+      ScrollViewer.CanContentScroll="False">
+
+    <Page.Resources>
+        <conv:UrlToImageSourceConverter x:Key="UrlToImageSource" />
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
+        <StackPanel>
+            <TextBlock Text="Hydra Launcher Backups" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Margin="0,0,0,8" />
+            <TextBlock Text="Select the backups you want to import to CloudRedirect." Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,16"/>
+            
+            <WrapPanel Margin="0,0,0,16">
+                <ui:Button Content="Load Backups" Click="LoadBackups_Click" Icon="{ui:SymbolIcon FolderOpen24}" Margin="0,0,8,0" />
+                <ui:Button Content="Refresh" Click="LoadBackups_Click" Icon="{ui:SymbolIcon ArrowClockwise24}" Margin="0,0,8,0" />
+                <ui:TextBox x:Name="SearchBox" PlaceholderText="Search games..." Width="250" TextChanged="SearchBox_TextChanged" Margin="0,0,8,0" />
+                <TextBlock x:Name="StatusText" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="8,0,0,0"/>
+            </WrapPanel>
+            
+            <ItemsControl x:Name="BackupList" Margin="0,0,0,20">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ui:CardControl Margin="0,0,0,8">
+                            <ui:CardControl.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+
+                                    <Border Grid.Column="1" Width="92" Height="43" CornerRadius="4" Margin="0,0,12,0" VerticalAlignment="Center" ClipToBounds="True">
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding HeaderUrl, Converter={StaticResource UrlToImageSource}}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" />
+                                        </Border.Background>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextTrimming="CharacterEllipsis" />
+                                        <WrapPanel Margin="0,3,0,0">
+                                            <TextBlock Text="{Binding AppId}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12" Margin="0,0,12,0" />
+                                            <TextBlock Text="{Binding Size}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12" />
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </ui:CardControl.Header>
+                        </ui:CardControl>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+            <ui:Button x:Name="ImportBtn" Content="Import Selected" Click="Import_Click" Appearance="Primary" Icon="{ui:SymbolIcon ArrowDownload24}" IsEnabled="False" HorizontalAlignment="Left" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

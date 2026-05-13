@@ -1,0 +1,123 @@
+﻿<Page x:Class="ToolsCloud.Pages.LudusaviPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:res="clr-namespace:ToolsCloud.Resources"
+      xmlns:conv="clr-namespace:ToolsCloud.Converters"
+      Title="Ludusavi Scan">
+
+    <Page.Resources>
+        <conv:UrlToImageSourceConverter x:Key="UrlToImageSource" />
+    </Page.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Ludusavi Scan" FontSize="24" FontWeight="SemiBold" Margin="0,0,0,8"/>
+        
+        <TextBlock Grid.Row="1" Text="Scan for local game saves using Ludusavi's manifest and send them to the CloudRedirect storage." TextWrapping="Wrap" Margin="0,0,0,16" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+
+        <Grid Grid.Row="2" x:Name="ScanPanel">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Vertical" Margin="0,0,16,0">
+                    <TextBlock Text="Manifests to Use" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ListBox x:Name="ManifestList" MaxHeight="100" BorderThickness="1" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" Background="{DynamicResource ControlFillColorDefaultBrush}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Margin="0,2"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <ui:Button Content="Add Local Manifest..." Margin="0,8,0,0" Click="AddManifestButton_Click" Icon="{ui:SymbolIcon DocumentAdd24}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Vertical">
+                    <TextBlock Text="Scan Scope" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <RadioButton x:Name="RadioStandard" Content="Standard (AppData, Documents, etc.)" IsChecked="True" Margin="0,0,0,4"/>
+                    <RadioButton x:Name="RadioCustom" Content="Custom Base Directory" Margin="0,0,0,4"/>
+                    <StackPanel Orientation="Horizontal" Margin="24,0,0,8">
+                        <ui:TextBox x:Name="CustomPathBox" PlaceholderText="D:\Games\Backups" Width="250" IsEnabled="{Binding IsChecked, ElementName=RadioCustom}"/>
+                        <ui:Button Content="Browse" Margin="8,0,0,0" IsEnabled="{Binding IsChecked, ElementName=RadioCustom}" Click="BrowseCustomPath_Click"/>
+                    </StackPanel>
+                    <RadioButton x:Name="RadioGlobal" Content="Global Scan (Search all drives - SLOW)" Margin="0,0,0,8"/>
+                    
+                    <TextBlock Text="Scan Engine" FontWeight="SemiBold" Margin="0,8,0,8"/>
+                    <RadioButton x:Name="RadioEngineNative" Content="Native C# Engine (Fast)" IsChecked="True" Margin="0,0,0,4"/>
+                    <RadioButton x:Name="RadioEngineExe" Content="ludusavi.exe (Hydra)" ToolTip="Uses the ludusavi.exe installed by Hydra Launcher if available." Margin="0,0,0,8"/>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,16">
+                <ui:Button x:Name="ScanButton" Content="Scan Local Games" Appearance="Primary" Click="ScanButton_Click" Icon="{ui:SymbolIcon Search24}" Margin="0,0,8,0" />
+                <ui:TextBox x:Name="SearchBox" PlaceholderText="Search games..." Width="250" TextChanged="SearchBox_TextChanged" Margin="0,0,8,0" />
+                <TextBlock x:Name="ScanStatus" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Margin="8,0,0,0" />
+            </StackPanel>
+
+            <ItemsControl x:Name="GamesList" Grid.Row="3" Background="Transparent" BorderThickness="0" Margin="0,0,0,20">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,0,0,8">
+                            <ui:CardControl>
+                                <ui:CardControl.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+
+                                        <Border Grid.Column="1" Width="92" Height="43" CornerRadius="4" Margin="0,0,12,0" VerticalAlignment="Center" ClipToBounds="True">
+                                            <Border.Background>
+                                                <ImageBrush ImageSource="{Binding HeaderUrl, Converter={StaticResource UrlToImageSource}}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" />
+                                            </Border.Background>
+                                        </Border>
+
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding DisplayName}" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextTrimming="CharacterEllipsis" />
+                                            <WrapPanel Margin="0,3,0,0">
+                                                <TextBlock Text="{Binding SteamId}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12" Margin="0,0,12,0" />
+                                                <TextBlock Text="{Binding Status}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12" />
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </ui:CardControl.Header>
+                            </ui:CardControl>
+                            <Expander Header="View Found Files" Margin="44,4,0,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                                <ListBox ItemsSource="{Binding FoundFiles}" Background="Transparent" BorderThickness="0" MaxHeight="150" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap" />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Expander>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <ui:Button x:Name="SendToCloudButton" Content="Send Selected to Cloud" Appearance="Success" IsEnabled="False" Click="SendToCloudButton_Click" Icon="{ui:SymbolIcon CloudArrowUp24}" />
+        </StackPanel>
+    </Grid>
+</Page>
